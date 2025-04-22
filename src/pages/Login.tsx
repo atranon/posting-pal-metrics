@@ -1,22 +1,67 @@
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
+import { Eye, EyeOff, LogIn, Mail, Lock, Facebook, Google } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const Login = () => {
   const navigate = useNavigate();
-  
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would authenticate the user
-    // For now, we'll just simulate success and redirect
-    toast({
-      title: "Login successful",
-      description: "Welcome back to PostingPal!",
-    });
-    navigate("/dashboard");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back to PostingPal!",
+      });
+      navigate("/dashboard");
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "Please check your credentials and try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSocialLogin = async (provider: "google" | "facebook") => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`,
+        },
+      });
+
+      if (error) throw error;
+    } catch (error: any) {
+      toast({
+        title: "Social login failed",
+        description: error.message || "Could not connect to the provider. Please try again.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -39,14 +84,20 @@ const Login = () => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <Label htmlFor="email">Email address</Label>
-              <div className="mt-1">
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
                 <Input
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
                   required
-                  className="block w-full px-3 py-2"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block w-full pl-10"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -55,25 +106,49 @@ const Login = () => {
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
                 <div className="text-sm">
-                  <a href="#" className="font-medium text-[#6E59A5] hover:text-[#5E4A95]">
+                  <Link to="/forgot-password" className="font-medium text-[#6E59A5] hover:text-[#5E4A95]">
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
               </div>
-              <div className="mt-1">
+              <div className="mt-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
                 <Input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
                   required
-                  className="block w-full px-3 py-2"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block w-full pl-10 pr-10"
                 />
+                <div 
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400" />
+                  )}
+                </div>
               </div>
             </div>
 
             <div>
-              <Button type="submit" className="w-full bg-[#6E59A5] hover:bg-[#5E4A95]">
+              <Button 
+                type="submit" 
+                className="w-full bg-[#6E59A5] hover:bg-[#5E4A95] flex items-center justify-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                ) : (
+                  <LogIn className="h-5 w-5 mr-2" />
+                )}
                 Sign in
               </Button>
             </div>
@@ -90,25 +165,24 @@ const Login = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              <div>
-                <Button variant="outline" className="w-full">
-                  <svg className="h-5 w-5 mr-2" fill="#4285F4" viewBox="0 0 24 24">
-                    <path d="M12.545 10.239v3.818h5.556c-.23 1.438-.926 2.653-1.969 3.46v2.869h3.183c1.862-1.708 2.938-4.215 2.938-7.194 0-.692-.063-1.36-.183-2.002l-9.525.049z" />
-                    <path d="M5.61 14.086l-2.173 1.677c1.392 2.755 4.264 4.649 7.565 4.649 2.292 0 4.219-.755 5.624-2.052l-3.183-2.469c-.891.611-2.049.941-3.394.941-2.594 0-4.791-1.754-5.572-4.113l-2.125.124 2.058 1.243z" />
-                    <path d="M5.609 9.458c-.203-.612-.319-1.269-.319-1.958 0-.69.116-1.347.319-1.957L3.28 3.936l-.263.088C1.779 5.141 1 6.986 1 9c0 2.014.779 3.856 2.117 5.243l2.492-2.785z" />
-                    <path d="M12.002 4.65c1.618 0 3.074.568 4.214 1.583L19 3.366C17.172 1.73 14.786.75 12.002.75 7.603.75 3.947 3.352 2.918 6.977l2.672 2.078c.786-2.36 2.981-4.068 5.574-4.068" />
-                  </svg>
-                  Google
-                </Button>
-              </div>
-              <div>
-                <Button variant="outline" className="w-full">
-                  <svg className="h-5 w-5 mr-2" fill="#1877F2" viewBox="0 0 24 24">
-                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                  </svg>
-                  Facebook
-                </Button>
-              </div>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => handleSocialLogin("google")}
+                disabled={isLoading}
+              >
+                <Google className="h-5 w-5 mr-2 text-[#4285F4]" />
+                Google
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => handleSocialLogin("facebook")}
+                disabled={isLoading}
+              >
+                <Facebook className="h-5 w-5 mr-2 text-[#1877F2]" />
+                Facebook
+              </Button>
             </div>
           </div>
         </div>
