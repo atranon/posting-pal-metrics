@@ -1,13 +1,13 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
-import { Mail, UserPlus, User } from "lucide-react";
+import { UserPlus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import PasswordInput from "./PasswordInput";
+import NameFields from "./NameFields";
+import EmailField from "./EmailField";
+import TermsAgreement from "./TermsAgreement";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -81,65 +81,14 @@ const SignupForm = () => {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="first-name">First name</Label>
-          <div className="mt-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              id="first-name"
-              name="first-name"
-              type="text"
-              autoComplete="given-name"
-              required
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="block w-full pl-10"
-            />
-          </div>
-        </div>
+      <NameFields
+        firstName={firstName}
+        lastName={lastName}
+        setFirstName={setFirstName}
+        setLastName={setLastName}
+      />
 
-        <div>
-          <Label htmlFor="last-name">Last name</Label>
-          <div className="mt-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <User className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              id="last-name"
-              name="last-name"
-              type="text"
-              autoComplete="family-name"
-              required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="block w-full pl-10"
-            />
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="email">Email address</Label>
-        <div className="mt-1 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Mail className="h-5 w-5 text-gray-400" />
-          </div>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full pl-10"
-            placeholder="you@example.com"
-          />
-        </div>
-      </div>
+      <EmailField email={email} setEmail={setEmail} />
 
       <div>
         <Label htmlFor="password">Password</Label>
@@ -155,26 +104,7 @@ const SignupForm = () => {
         </p>
       </div>
 
-      <div className="flex items-center">
-        <input
-          id="terms"
-          name="terms"
-          type="checkbox"
-          checked={agreedToTerms}
-          onChange={(e) => setAgreedToTerms(e.target.checked)}
-          className="h-4 w-4 text-[#6E59A5] focus:ring-[#6E59A5] border-gray-300 rounded"
-        />
-        <label htmlFor="terms" className="ml-2 block text-sm text-gray-600">
-          I agree to the{" "}
-          <a href="#" className="font-medium text-[#6E59A5] hover:text-[#5E4A95]">
-            Terms of Service
-          </a>{" "}
-          and{" "}
-          <a href="#" className="font-medium text-[#6E59A5] hover:text-[#5E4A95]">
-            Privacy Policy
-          </a>
-        </label>
-      </div>
+      <TermsAgreement agreed={agreedToTerms} setAgreed={setAgreedToTerms} />
 
       <div>
         <Button 
@@ -195,4 +125,3 @@ const SignupForm = () => {
 };
 
 export default SignupForm;
-
