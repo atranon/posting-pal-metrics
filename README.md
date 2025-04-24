@@ -1,73 +1,57 @@
-# Welcome to your Lovable project
 
-## Project info
+# PostingPal
 
-**URL**: https://lovable.dev/projects/bf2ddc8a-91fd-47dd-95e1-f9a8f1d40a06
+A social media management platform that helps users schedule posts, analyze performance, and engage with their audience across various social networks.
 
-## How can I edit this code?
+## Features
 
-There are several ways of editing your application.
+- User authentication (sign up, login, password reset)
+- Dashboard for content scheduling and management
+- Analytics for tracking social media performance
+- Calendar view for scheduling posts
 
-**Use Lovable**
+## Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/bf2ddc8a-91fd-47dd-95e1-f9a8f1d40a06) and start prompting.
+- React
+- TypeScript
+- Tailwind CSS
+- Shadcn UI
+- Supabase (auth and database)
 
-Changes made via Lovable will be committed automatically to this repo.
+## Environment Variables
 
-**Use your preferred IDE**
+Before deploying, make sure to set the following environment variables:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+```
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Deployment Instructions
 
-Follow these steps:
+1. Build the project:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+```
+npm run build
+```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+2. Deploy the contents of the `dist` folder to your preferred hosting provider.
 
-# Step 3: Install the necessary dependencies.
-npm i
+3. Make sure your hosting provider has the environment variables set.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+## Development
+
+1. Install dependencies:
+
+```
+npm install
+```
+
+2. Start the development server:
+
+```
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+3. Open [http://localhost:8080](http://localhost:8080) in your browser.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/bf2ddc8a-91fd-47dd-95e1-f9a8f1d40a06) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
