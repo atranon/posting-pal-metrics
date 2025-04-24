@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
@@ -18,13 +18,17 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
     setLoading(true);
 
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const { error } = await supabase
         .from('posts')
         .insert([
           { 
             content,
             platforms: ['twitter', 'linkedin'],
-            user_id: (await supabase.auth.getUser()).data.user?.id
+            user_id: user.id,
+            status: 'draft'
           }
         ]);
 
