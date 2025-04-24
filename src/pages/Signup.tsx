@@ -7,6 +7,13 @@ import AuthContainer from "@/components/auth/AuthContainer";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    })
 
   return (
     <AuthContainer
