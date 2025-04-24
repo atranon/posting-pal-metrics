@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -23,6 +24,15 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!content.trim() || !platform) {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -59,9 +69,10 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         placeholder="What's on your mind?"
+        className="min-h-[100px]"
         required
       />
-      <Select value={platform} onValueChange={setPlatform}>
+      <Select value={platform} onValueChange={setPlatform} required>
         <SelectTrigger>
           <SelectValue placeholder="Select platform" />
         </SelectTrigger>
@@ -72,7 +83,11 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
           <SelectItem value="linkedin">LinkedIn</SelectItem>
         </SelectContent>
       </Select>
-      <Button type="submit" disabled={loading}>
+      <Button 
+        type="submit" 
+        disabled={loading} 
+        className="w-full bg-[#6E59A5]"
+      >
         {loading ? 'Creating...' : 'Create Post'}
       </Button>
     </form>
