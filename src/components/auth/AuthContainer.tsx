@@ -3,7 +3,7 @@ import React from "react";
 
 interface AuthContainerProps {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode; // Changed from string to React.ReactNode to accept JSX elements
   children: React.ReactNode;
 }
 
