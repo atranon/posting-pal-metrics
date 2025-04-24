@@ -13,6 +13,16 @@ import Analytics from "./pages/Analytics";
 import Calendar from "./pages/Calendar";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import PrivateRoute from "@/components/PrivateRoute"
+
+<Route
+  path="/dashboard"
+  element={
+    <PrivateRoute>
+      <Dashboard />
+    </PrivateRoute>
+  }
+
 
 const queryClient = new QueryClient();
 
