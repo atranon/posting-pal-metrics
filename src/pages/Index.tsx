@@ -1,7 +1,9 @@
-
 import { Button } from "@/components/ui/button";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { Link } from "react-router-dom";
+import HeroSection from "@/components/landing/HeroSection";
+import FeaturesSection from "@/components/landing/FeaturesSection";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
 
 const Index = () => {
   return (
@@ -107,76 +109,11 @@ const Index = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-white to-purple-50 py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-6">
-            Grow your audience with <span className="text-[#6E59A5]">PostingPal</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            The all-in-one platform to schedule posts, analyze performance, and engage with your audience across all your social networks.
-          </p>
-          <Button className="bg-[#6E59A5] hover:bg-[#5E4A95] text-white px-8 py-6 text-lg rounded-md">
-            Start your 14-day free trial
-          </Button>
-          <p className="mt-4 text-gray-500 text-sm">No credit card required</p>
-          
-          <div className="mt-16 bg-white shadow-xl rounded-lg p-6 max-w-4xl mx-auto">
-            <img 
-              src="https://buffer.com/static/illustrations/social-homepage-visuals@2x.png" 
-              alt="PostingPal Dashboard" 
-              className="w-full h-auto" 
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-12">
-            Everything you need to succeed on social
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#6E59A5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Publishing</h3>
-              <p className="text-gray-600">
-                Plan and publish your content for Instagram, Facebook, Twitter, Pinterest, and LinkedIn, all from one dashboard.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#6E59A5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Analytics</h3>
-              <p className="text-gray-600">
-                Analyze performance and create reports with easy-to-understand data visualizations.
-              </p>
-            </div>
-            
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#6E59A5]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Engagement</h3>
-              <p className="text-gray-600">
-                Respond to comments and messages across all your social channels from one dashboard.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <main>
+        <HeroSection />
+        <FeaturesSection />
+        <TestimonialsSection />
+      </main>
 
       {/* CTA Section */}
       <section className="py-16 bg-purple-50">
