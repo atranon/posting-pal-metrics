@@ -1,13 +1,13 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { LogIn, Mail } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import PasswordInput from "./PasswordInput";
+import EmailField from "./EmailField";
+import LoadingButton from "./LoadingButton";
+import { Label } from "@/components/ui/label";
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -45,25 +45,7 @@ const LoginForm = () => {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit}>
-      <div>
-        <Label htmlFor="email">Email address</Label>
-        <div className="mt-1 relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Mail className="h-5 w-5 text-gray-400" />
-          </div>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full pl-10"
-            placeholder="you@example.com"
-          />
-        </div>
-      </div>
+      <EmailField email={email} setEmail={setEmail} />
 
       <div>
         <div className="flex items-center justify-between">
@@ -84,18 +66,13 @@ const LoginForm = () => {
       </div>
 
       <div>
-        <Button 
+        <LoadingButton 
           type="submit" 
-          className="w-full bg-[#6E59A5] hover:bg-[#5E4A95] flex items-center justify-center"
-          disabled={isLoading}
+          isLoading={isLoading}
+          icon={<LogIn className="h-5 w-5" />}
         >
-          {isLoading ? (
-            <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-          ) : (
-            <LogIn className="h-5 w-5 mr-2" />
-          )}
           Sign in
-        </Button>
+        </LoadingButton>
       </div>
     </form>
   );

@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { UserPlus } from "lucide-react";
@@ -8,6 +9,7 @@ import PasswordInput from "./PasswordInput";
 import NameFields from "./NameFields";
 import EmailField from "./EmailField";
 import TermsAgreement from "./TermsAgreement";
+import LoadingButton from "./LoadingButton";
 
 const SignupForm = () => {
   const navigate = useNavigate();
@@ -107,18 +109,13 @@ const SignupForm = () => {
       <TermsAgreement agreed={agreedToTerms} setAgreed={setAgreedToTerms} />
 
       <div>
-        <Button 
+        <LoadingButton 
           type="submit" 
-          className="w-full bg-[#6E59A5] hover:bg-[#5E4A95] flex items-center justify-center"
-          disabled={isLoading}
+          isLoading={isLoading}
+          icon={<UserPlus className="h-5 w-5" />}
         >
-          {isLoading ? (
-            <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-          ) : (
-            <UserPlus className="h-5 w-5 mr-2" />
-          )}
           Create account
-        </Button>
+        </LoadingButton>
       </div>
     </form>
   );
