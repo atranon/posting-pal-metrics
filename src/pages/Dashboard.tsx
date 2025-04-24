@@ -1,19 +1,21 @@
+
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Card } from '@/components/ui/card';
 import { CreatePostForm } from '@/components/posts/CreatePostForm';
-import type { SocialPost } from '@/lib/supabase';
+import { useToast } from '@/components/ui/use-toast';
+import type { Database } from '@/lib/database.types';
+
+type SocialPost = Database['public']['Tables']['posts']['Row'];
 
 export default function Dashboard() {
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+  const { toast } = useToast();
 
   async function fetchPosts() {
     try {
+      setLoading(true);
       const { data, error } = await supabase
         .from('posts')
         .select('*')
@@ -21,12 +23,20 @@ export default function Dashboard() {
 
       if (error) throw error;
       setPosts(data || []);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
+      });
     } finally {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <div className="container mx-auto py-8">
@@ -40,7 +50,9 @@ export default function Dashboard() {
         <Card className="p-6">
           <h2 className="text-xl font-semibold mb-4">Recent Posts</h2>
           {loading ? (
-            <p>Loading...</p>
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6E59A5]"></div>
+            </div>
           ) : posts.length > 0 ? (
             <div className="grid gap-4">
               {posts.map((post) => (
@@ -60,7 +72,7 @@ export default function Dashboard() {
               ))}
             </div>
           ) : (
-            <p>No posts yet</p>
+            <p className="text-center text-gray-500 py-8">No posts yet</p>
           )}
         </Card>
       </div>

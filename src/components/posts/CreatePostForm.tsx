@@ -1,16 +1,8 @@
-
 import { useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/components/ui/use-toast';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 interface CreatePostFormProps {
   onSuccess?: () => void;
@@ -18,29 +10,23 @@ interface CreatePostFormProps {
 
 export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
   const [content, setContent] = useState('');
-  const [platform, setPlatform] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
-  async function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!content.trim() || !platform) {
-      toast({
-        title: 'Error',
-        description: 'Please fill in all fields',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     setLoading(true);
 
     try {
-      const { error } = await supabase.from('posts').insert({
-        content,
-        platforms: [platform],
-        status: 'draft',
-      });
+      const { error } = await supabase
+        .from('posts')
+        .insert([
+          { 
+            content,
+            platforms: ['twitter', 'linkedin'],
+            user_id: (await supabase.auth.getUser()).data.user?.id
+          }
+        ]);
 
       if (error) throw error;
 
@@ -50,7 +36,6 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
       });
 
       setContent('');
-      setPlatform('');
       onSuccess?.();
     } catch (error: any) {
       toast({
@@ -61,33 +46,18 @@ export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <Textarea
+        placeholder="What's on your mind?"
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        placeholder="What's on your mind?"
-        className="min-h-[100px]"
         required
+        className="min-h-[100px]"
       />
-      <Select value={platform} onValueChange={setPlatform} required>
-        <SelectTrigger>
-          <SelectValue placeholder="Select platform" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="twitter">Twitter</SelectItem>
-          <SelectItem value="facebook">Facebook</SelectItem>
-          <SelectItem value="instagram">Instagram</SelectItem>
-          <SelectItem value="linkedin">LinkedIn</SelectItem>
-        </SelectContent>
-      </Select>
-      <Button 
-        type="submit" 
-        disabled={loading} 
-        className="w-full bg-[#6E59A5]"
-      >
+      <Button type="submit" disabled={loading}>
         {loading ? 'Creating...' : 'Create Post'}
       </Button>
     </form>
