@@ -1,9 +1,29 @@
 
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/types/supabase';
 
-// Replace these placeholder values with your actual Supabase URL and anon key
-// For production deployment, you should set these values in your hosting provider's environment variables
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://your-project-url.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'your-anon-key';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
+
+export type SocialPost = {
+  id: string;
+  user_id: string;
+  content: string;
+  image_url?: string;
+  scheduled_for: string;
+  platforms: string[];
+  status: 'draft' | 'queued' | 'sent' | 'failed';
+  created_at: string;
+};
+
+export type SocialAccount = {
+  id: string;
+  user_id: string;
+  platform: string;
+  access_token: string;
+  platform_user_id: string;
+  username: string;
+  created_at: string;
+};

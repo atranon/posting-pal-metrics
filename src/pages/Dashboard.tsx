@@ -171,7 +171,28 @@ const Dashboard = () => {
                   <CardTitle>Content</CardTitle>
                   <CardDescription>Manage your social media posts</CardDescription>
                 </div>
-                <Button className="bg-[#6E59A5] hover:bg-[#5E4A95]">
+                <Button 
+                  className="bg-[#6E59A5] hover:bg-[#5E4A95]"
+                  onClick={() => {
+                    const dialog = document.createElement('dialog');
+                    dialog.className = 'p-4 rounded-lg shadow-xl';
+                    dialog.innerHTML = '<div id="create-post-container"></div>';
+                    document.body.appendChild(dialog);
+                    dialog.showModal();
+                    
+                    const root = ReactDOM.createRoot(
+                      document.getElementById('create-post-container')!
+                    );
+                    root.render(
+                      <CreatePostForm 
+                        onSuccess={() => {
+                          dialog.close();
+                          window.location.reload();
+                        }} 
+                      />
+                    );
+                  }}
+                >
                   Create Post
                 </Button>
               </CardHeader>
