@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +15,7 @@ export const CreatePostForm = ({ onSuccess }: { onSuccess?: () => void }) => {
   const [scheduledDate, setScheduledDate] = useState<Date>();
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const { toast } = useToast();
 
   const platforms = [
@@ -24,6 +24,26 @@ export const CreatePostForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     { id: 'instagram', label: 'Instagram' },
     { id: 'linkedin', label: 'LinkedIn' }
   ];
+
+  const uploadImage = async () => {
+    if (!imageFile) return null;
+
+    const fileExt = imageFile.name.split('.').pop();
+    const fileName = `${Math.random()}.${fileExt}`;
+    const filePath = `${fileName}`;
+
+    const { error: uploadError, data } = await supabase.storage
+      .from('post-images')
+      .upload(filePath, imageFile);
+
+    if (uploadError) throw uploadError;
+
+    const { data: { publicUrl } } = supabase.storage
+      .from('post-images')
+      .getPublicUrl(filePath);
+
+    return publicUrl;
+  };
 
   const handleSubmit = async () => {
     if (!content || !scheduledDate || selectedPlatforms.length === 0) {
@@ -38,15 +58,18 @@ export const CreatePostForm = ({ onSuccess }: { onSuccess?: () => void }) => {
     setIsSubmitting(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) throw new Error('Not authenticated');
+
+      const imageUrl = await uploadImage();
 
       const { error } = await supabase.from('posts').insert({
         user_id: user.id,
         content,
         scheduled_for: scheduledDate.toISOString(),
         platforms: selectedPlatforms,
-        status: 'queued'
+        status: 'queued',
+        image_url: imageUrl
       });
 
       if (error) throw error;
@@ -59,6 +82,7 @@ export const CreatePostForm = ({ onSuccess }: { onSuccess?: () => void }) => {
       setContent('');
       setScheduledDate(undefined);
       setSelectedPlatforms([]);
+      setImageFile(null);
       onSuccess?.();
     } catch (error) {
       toast({
@@ -77,13 +101,14 @@ export const CreatePostForm = ({ onSuccess }: { onSuccess?: () => void }) => {
         <CardTitle>Create New Post</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <input type="file" onChange={(e) => setImageFile(e.target.files?.[0])} />
         <Textarea 
           placeholder="What's on your mind?"
           value={content}
           onChange={(e) => setContent(e.target.value)}
           rows={4}
         />
-        
+
         <div>
           <label className="text-sm font-medium">Schedule for</label>
           <Popover>

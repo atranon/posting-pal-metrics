@@ -27,11 +27,18 @@ const LoginForm = () => {
 
       if (error) throw error;
 
-      toast({
-        title: "Login successful",
-        description: "Welcome back to PostingPal!",
-      });
-      navigate("/dashboard");
+      if (data?.user) {
+        toast({
+          title: "Login successful",
+          description: "Welcome back to PostingPal!",
+        });
+        // Store user session
+        await supabase.auth.setSession({
+          access_token: data.session?.access_token || '',
+          refresh_token: data.session?.refresh_token || ''
+        });
+        navigate("/dashboard");
+      }
     } catch (error: any) {
       toast({
         title: "Login failed",

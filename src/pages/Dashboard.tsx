@@ -9,8 +9,39 @@ import { Calendar, ChartBar, MessageSquare, Settings, User } from "lucide-react"
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("queued");
   
-  // Mock data for the social media posts
-  const posts = [
+  const [posts, setPosts] = useState<SocialPost[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        setPosts(data || []);
+      } catch (error: any) {
+        toast({
+          title: "Error fetching posts",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-screen">Loading posts...</div>;
+  }
+
+  // Actual posts from database
+  const filteredPosts = posts.filter(post => post.status === activeTab);
     {
       id: 1,
       content: "Check out our latest product release! #innovation #tech",
