@@ -14,7 +14,7 @@ import Calendar from "./pages/Calendar";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-import PrivateRoute from "@/components/PrivateRoute"; // Make sure this file exists
+import PrivateRoute from "@/components/PrivateRoute";
 
 const queryClient = new QueryClient();
 
