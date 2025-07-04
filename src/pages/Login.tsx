@@ -4,7 +4,7 @@ import LoginForm from "@/components/auth/LoginForm";
 import SocialLogin from "@/components/auth/SocialLogin";
 import { useState } from "react";
 import AuthContainer from "@/components/auth/AuthContainer";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/supabase";
 
 const handleLogin = async (email: string, password: string) => {
   const { error } = await supabase.auth.signInWithPassword({

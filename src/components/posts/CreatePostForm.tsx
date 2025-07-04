@@ -1,69 +1,76 @@
+
 import { useState } from 'react';
-import { supabase } from '@/lib/supabaseClient';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Calendar } from 'lucide-react';
 
-interface CreatePostFormProps {
-  onSuccess?: () => void;
-}
-
-export function CreatePostForm({ onSuccess }: CreatePostFormProps) {
+export const CreatePostForm = () => {
   const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const [platforms, setPlatforms] = useState<string[]>([]);
+  const [scheduledFor, setScheduledFor] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('Not authenticated');
-
-      const { error } = await supabase
-        .from('posts')
-        .insert([
-          { 
-            content,
-            platforms: ['twitter', 'linkedin'],
-            user_id: user.id,
-            status: 'draft'
-          }
-        ]);
-
-      if (error) throw error;
-
-      toast({
-        title: 'Success',
-        description: 'Post created successfully',
-      });
-
-      setContent('');
-      onSuccess?.();
-    } catch (error: any) {
-      toast({
-        title: 'Error',
-        description: error.message,
-        variant: 'destructive',
-      });
-    } finally {
-      setLoading(false);
+  const handlePlatformChange = (platform: string, checked: boolean) => {
+    if (checked) {
+      setPlatforms([...platforms, platform]);
+    } else {
+      setPlatforms(platforms.filter(p => p !== platform));
     }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Creating post:', { content, platforms, scheduledFor });
+    // Here you would typically save to Supabase
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Textarea
-        placeholder="What's on your mind?"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        required
-        className="min-h-[100px]"
-      />
-      <Button type="submit" disabled={loading}>
-        {loading ? 'Creating...' : 'Create Post'}
-      </Button>
+      <div>
+        <Textarea
+          placeholder="What's on your mind?"
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          className="min-h-[100px]"
+          required
+        />
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-2 block">Platforms</label>
+        <div className="flex space-x-4">
+          {['Twitter', 'LinkedIn', 'Facebook', 'Instagram'].map((platform) => (
+            <div key={platform} className="flex items-center space-x-2">
+              <Checkbox
+                id={platform}
+                checked={platforms.includes(platform)}
+                onCheckedChange={(checked) => handlePlatformChange(platform, checked as boolean)}
+              />
+              <label htmlFor={platform} className="text-sm">{platform}</label>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="text-sm font-medium mb-2 block">Schedule for later</label>
+        <input
+          type="datetime-local"
+          value={scheduledFor}
+          onChange={(e) => setScheduledFor(e.target.value)}
+          className="px-3 py-2 border border-gray-300 rounded-md text-sm w-full"
+        />
+      </div>
+
+      <div className="flex space-x-2">
+        <Button type="submit" className="flex-1">
+          Publish Now
+        </Button>
+        <Button type="button" variant="outline" className="flex-1">
+          Save Draft
+        </Button>
+      </div>
     </form>
   );
-}
+};
